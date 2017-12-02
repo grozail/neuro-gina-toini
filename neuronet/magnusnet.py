@@ -62,14 +62,14 @@ batch_size = 3
 n_epochs = 10
 n_features = 64
 
-dataset = datasets.ImageFolder(root='../neurodata/neuro-train',
+dataset = datasets.ImageFolder(root='/workspace/ilya/neuro-gina-toini/neurodata/neuro-train',
                                    transform=transforms.Compose([
                                        transforms.ToTensor()
                                    ])
                                    )
 dataloader = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
 
-testset = datasets.ImageFolder(root='../neurodata/neuro-test',
+testset = datasets.ImageFolder(root='/workspace/ilya/neuro-gina-toini/neurodata/neuro-test',
                                    transform=transforms.Compose([
                                        transforms.ToTensor()
                                    ])
