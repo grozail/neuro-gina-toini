@@ -14,11 +14,11 @@ class MagnusNet(nn.Module):
     
     @staticmethod
     def no_dim_reduction_conv(in_channels, out_channels, padding=1, bias=False):
-        return nn.Conv2d(in_channels, out_channels, 3, 1, padding, bias)
+        return nn.Conv2d(in_channels, out_channels, 3, 1, padding, bias=bias)
     
     @staticmethod
     def half_dim_reduction_conv(in_channels, out_channels, padding=1, bias=False):
-        return nn.Conv2d(in_channels, out_channels, 4, 2, padding, bias)
+        return nn.Conv2d(in_channels, out_channels, 4, 2, padding, bias=bias)
     
     def __init__(self, n_features):
         super(MagnusNet, self).__init__()
