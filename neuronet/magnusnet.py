@@ -116,6 +116,7 @@ def test():
         output = model(x)
         test_loss += criterion(output, label)
         pred = output.data.max(1, keepdim=True)[1]
+        pred = pred.float()
         correct += pred.eq(label.data.view_as(pred)).cpu().sum()
         
     test_loss /= len(testloader.dataset)
