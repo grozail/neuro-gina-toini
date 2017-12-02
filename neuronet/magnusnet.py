@@ -22,6 +22,7 @@ class MagnusNet(nn.Module):
     
     def __init__(self, n_features):
         super(MagnusNet, self).__init__()
+        self.n_features = n_features
         self.convnet = nn.Sequential(
             MagnusNet.half_dim_reduction_conv(3, n_features),
             nn.BatchNorm2d(n_features),
@@ -35,19 +36,19 @@ class MagnusNet(nn.Module):
             MagnusNet.half_dim_reduction_conv(n_features * 2, n_features * 4),
             nn.BatchNorm2d(n_features*4),
             nn.LeakyReLU(0.1, True),
-            nn.Dropout2d(),
+            nn.Conv2d(n_features * 4, n_features * 4, 5),
         )
         self.linearnet = nn.Sequential(
-            nn.Linear(640, 320),
+            nn.Linear(n_features * 4, n_features),
             nn.ReLU(True),
             nn.Dropout(0.3),
-            nn.Linear(320, 1),
+            nn.Linear(n_features, 1),
             nn.Sigmoid(),
         )
     
     def forward(self, x):
         x = self.convnet(x)
-        x = x.view(-1, 640)
+        x = x.view(-1, self.n_features*4)
         x = self.linearnet(x)
         return x
     
