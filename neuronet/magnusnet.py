@@ -90,7 +90,7 @@ criterion = nn.MSELoss()
 def train(epoch):
     model.train()
     for i, (x, label) in enumerate(dataloader):
-        label = torch.FloatTensor(label)
+        label = label.float()
         if CUDA:
             x, label = x.cuda(), label.cuda()
         x, label = Variable(x), Variable(label)
