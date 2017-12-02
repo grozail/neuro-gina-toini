@@ -109,6 +109,7 @@ def test():
     test_loss = 0
     correct = 0
     for i, (x, label) in enumerate(testloader):
+        label = label.float()
         if CUDA:
             x, label = x.cuda(), label.cuda()
         x, label = Variable(x, volatile=True), Variable(label)
