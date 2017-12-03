@@ -21,7 +21,7 @@ def eval():
     x.cpu()
     ans = model(x).data.cpu().numpy()[0]
     print(ans)
-    response = {'answer': ans[0], 'type': type(ans[0])}
+    response = {'answer': str(ans[0]), 'type': str(type(ans[0]))}
     response_pickled = jsonpickle.encode(response)
     return Response(response=jsonify(response), status=200, mimetype="application/json")
 
