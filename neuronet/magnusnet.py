@@ -108,21 +108,25 @@ def test():
     model.eval()
     test_loss = 0
     correct = 0
+    total = 0
     for i, (x, label) in enumerate(testloader):
+        int_label = torch.LongTensor(label)
         label = label.float()
         if CUDA:
             x, label = x.cuda(), label.cuda()
         x, label = Variable(x, volatile=True), Variable(label)
         output = model(x)
         test_loss += criterion(output, label)
-        pred = output.data.max(1, keepdim=True)[1]
-        pred = pred.float()
-        correct += pred.eq(label.data.view_as(pred)).cpu().sum()
-        
-    test_loss /= len(testloader.dataset)
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, correct, len(testloader.dataset),
-        100. * correct / len(testloader.dataset)))
+        output_tensor = output.data
+        output_tensor = output_tensor.apply_(lambda x: 0.0 if x < 0.5 else 1.0)
+        onp = output_tensor.numpy().flatten()
+        lnp = int_label.numpy()
+        correct += (onp == lnp).sum()
+        total += int_label.size()[0]
+    test_loss = test_loss.data.cpu().numpy()[0] / total
+    
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{}\n'.format(
+        test_loss, correct, total))
     
     
 if __name__ == '__main__':
