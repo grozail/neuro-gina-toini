@@ -48,7 +48,7 @@ class MagnusNet(nn.Module):
     
     def forward(self, x):
         x = self.convnet(x)
-        x = x.view(-1, self.n_features*4)
+        x = x.view(-1, self.n_features)
         x = self.linearnet(x)
         return x
     
