@@ -39,10 +39,17 @@ class MagnusNet(nn.Module):
             nn.Conv2d(n_features * 4, n_features, 5),
         )
         self.linearnet = nn.Sequential(
-            nn.Dropout2d(0.3),
+            nn.Dropout2d(),
             nn.Linear(n_features, 32),
             nn.ReLU(True),
-            nn.Linear(32, 1),
+            nn.Linear(32, 16),
+            nn.Dropout(),
+            nn.ReLU(True),
+            nn.Linear(16, 8),
+            nn.ReLU(True),
+            nn.Linear(8, 4),
+            nn.ReLU(True),
+            nn.Linear(4, 1),
             nn.Sigmoid(),
         )
     
@@ -136,7 +143,8 @@ def test():
         output = model(x)
         test_loss += criterion(output, label)
         output_tensor = output.data
-        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.9 else 1.0)
+        print(output_tensor)
+        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.8 else 1.0)
         onp = output_tensor.numpy().flatten()
         lnp = int_label.cpu().numpy()
         print(onp, ' ', lnp)
