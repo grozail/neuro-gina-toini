@@ -13,11 +13,11 @@ CUDA = torch.cuda.is_available()
 class MagnusNet(nn.Module):
     
     @staticmethod
-    def no_dim_reduction_conv(in_channels, out_channels, padding=1, bias=False):
+    def no_dim_reduction_conv(in_channels, out_channels, padding=1, bias=True):
         return nn.Conv2d(in_channels, out_channels, 3, 1, padding, bias=bias)
     
     @staticmethod
-    def half_dim_reduction_conv(in_channels, out_channels, padding=1, bias=False):
+    def half_dim_reduction_conv(in_channels, out_channels, padding=1, bias=True):
         return nn.Conv2d(in_channels, out_channels, 4, 2, padding, bias=bias)
     
     def __init__(self, n_features):
@@ -39,10 +39,10 @@ class MagnusNet(nn.Module):
             nn.Conv2d(n_features * 4, n_features * 4, 5),
         )
         self.linearnet = nn.Sequential(
-            nn.Linear(n_features * 4, n_features),
+            nn.Dropout2d(0.3),
+            nn.Linear(n_features * 4, n_features*4),
             nn.ReLU(True),
-            nn.Dropout(0.3),
-            nn.Linear(n_features, 1),
+            nn.Linear(n_features*4, 1),
             nn.Sigmoid(),
         )
     
@@ -62,7 +62,7 @@ class MagnusNet(nn.Module):
 parser = argparse.ArgumentParser(description='neurohack')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 10)')
-parser.add_argument('--batch-size', type=int, default=3, metavar='N',
+parser.add_argument('--batch-size', type=int, default=10, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
@@ -113,10 +113,9 @@ def train(epoch):
         loss = criterion(output, label)
         loss.backward()
         optimizer.step()
-        if i % 5 == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, i * len(x), len(dataloader.dataset),
-                       100. * i / len(dataloader), loss.data[0]))
+        print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            epoch, i * len(x), len(dataloader.dataset),
+                   100. * i / len(dataloader), loss.data[0]))
             
 def test():
     model.eval()
@@ -154,6 +153,7 @@ if __name__ == '__main__':
     x = Image.open('/workspace/ilya/neuro-gina-toini/neurodata/neuro-train/1/vlad13.jpg')
     x.load()
     data = np.asarray(x, 'int32')
+    data = torch.from_numpy(data).float()
     data = Variable(data)
     for i in range(10):
         print(model(data))
