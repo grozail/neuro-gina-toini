@@ -14,6 +14,7 @@ model.load_state_dict(torch.load('trained.pt'))
 def eval():
     r = request
     nparr = np.fromstring(r.data, np.int32)
+    print(nparr)
     x = torch.from_numpy(nparr).float()
     x = Variable(x).view(1, 3, 84, 84)
     ans = model(x).data.cpu().numpy()[0]
