@@ -79,7 +79,6 @@ parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
 parser.add_argument('--n-features', type=int, default=64, metavar='N',
                     help='n_features (default: 64)')
 
-parser.add_argument('--save-path', default='neuronet/saved')
 parser.add_argument('--save', default='false')
 
 args = parser.parse_args()
@@ -186,5 +185,6 @@ if __name__ == '__main__':
     print(model(n_data))
     finish = time.time()
     print('Execution time ', finish-start, ' s')
+    print(args.save)
     if args.save is 'true':
         torch.save(model.state_dict(), 'neuronet/saved')
