@@ -4,6 +4,7 @@ import numpy as np
 from torch.autograd import Variable
 import neuronet.magnusnet as mnet
 import jsonpickle
+import json
 
 app = Flask('neurohack')
 model = mnet.model
@@ -21,7 +22,7 @@ def eval():
     ans = model(x).data.cpu().numpy()[0]
     print(ans)
     response = {'answer': ans[0], 'type': type(ans[0])}
-    response_pickled = jsonpickle.encode(response)
+    response_pickled = json.dumps(response)
     return Response(response=response_pickled, status=200, mimetype="application/json")
 
 
