@@ -173,7 +173,7 @@ if __name__ == '__main__':
     data = torch.from_numpy(data).float()
     data = Variable(data).view(1, 3, 84, 84)
     
-    n_x = Image.open('neurodata/neuro-train/0/adrey1.png')
+    n_x = Image.open('neurodata/neuro-train/0/adrey2.png')
     n_x.load()
     n_data = np.asarray(n_x, 'int32')
     n_data = torch.from_numpy(n_data).float()
