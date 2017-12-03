@@ -8,7 +8,7 @@ import jsonpickle
 app = Flask('neurohack')
 model = mnet.model
 model.load_state_dict(torch.load('trained.pt'))
-
+model.cuda()
 
 @app.route('/', methods=['POST'])
 def eval():
@@ -17,6 +17,7 @@ def eval():
     print(nparr)
     x = torch.from_numpy(nparr).float()
     x = Variable(x).view(1, 3, 84, 84)
+    x.cuda()
     ans = model(x).data.cpu().numpy()[0]
     response = {'answer': ans, 'type': type(ans)}
     response_pickled = jsonpickle.encode(response)
