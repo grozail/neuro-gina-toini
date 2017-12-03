@@ -144,7 +144,7 @@ def test():
         test_loss += criterion(output, label)
         output_tensor = output.data
         print(output_tensor)
-        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.8 else 1.0)
+        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.5 else 1.0)
         onp = output_tensor.numpy().flatten()
         lnp = int_label.cpu().numpy()
         print(onp, ' ', lnp)
