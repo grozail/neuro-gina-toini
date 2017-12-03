@@ -19,6 +19,7 @@ def eval():
     x = Variable(x).view(1, 3, 84, 84)
     x.cpu()
     ans = model(x).data.cpu().numpy()[0]
+    print(ans)
     response = {'answer': ans, 'type': type(ans)}
     response_pickled = jsonpickle.encode(response)
     return Response(response=response_pickled, status=200, mimetype="application/json")
