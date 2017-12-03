@@ -187,4 +187,4 @@ if __name__ == '__main__':
     finish = time.time()
     print('Execution time ', finish-start, ' s')
     if args.save is 'true':
-        torch.save(model.state_dict(), 'neuronet/saved/{}'.format(time.strftime("%d/%m/%Y-%H:%M:%S")))
+        torch.save(model.state_dict(), 'neuronet/saved')
