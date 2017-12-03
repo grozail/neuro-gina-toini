@@ -155,6 +155,8 @@ if __name__ == '__main__':
     data = np.asarray(x, 'int32')
     data = torch.from_numpy(data).float()
     data = Variable(data).view(1,3,84,84)
+    if CUDA:
+        data = data.cuda()
     for i in range(10):
         print(model(data))
     finish = time.time()
