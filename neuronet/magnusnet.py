@@ -40,9 +40,9 @@ class MagnusNet(nn.Module):
         )
         self.linearnet = nn.Sequential(
             nn.Dropout2d(0.3),
-            nn.Linear(n_features * 4, n_features*4),
+            nn.Linear(n_features * 4, n_features),
             nn.ReLU(True),
-            nn.Linear(n_features*4, 1),
+            nn.Linear(n_features, 1),
             nn.Sigmoid(),
         )
     
