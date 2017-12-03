@@ -186,5 +186,5 @@ if __name__ == '__main__':
     finish = time.time()
     print('Execution time ', finish-start, ' s')
     print(args.save)
-    if args.save is 'true':
-        torch.save(model.state_dict(), 'neuronet/saved')
+    if args.save == 'true':
+        torch.save(model.state_dict(), 'trained.pt')
