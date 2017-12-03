@@ -68,7 +68,7 @@ parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='ADAM momentum (default: 0.9)')
-parser.add_argument('--n-features', type=float, default=64, metavar='M',
+parser.add_argument('--n-features', type=int, default=64, metavar='M',
                     help='n_features (default: 64)')
 args = parser.parse_args()
 
