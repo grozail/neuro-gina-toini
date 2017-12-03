@@ -1,3 +1,4 @@
+import argparse
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -59,9 +60,22 @@ class MagnusNet(nn.Module):
             instance.cuda()
         return instance
 
-batch_size = 3
-n_epochs = 10
-n_features = 64
+parser = argparse.ArgumentParser(description='neurohack')
+parser.add_argument('--epochs', type=int, default=10, metavar='N',
+                    help='number of epochs to train (default: 10)')
+parser.add_argument('--batch-size', type=int, default=3, metavar='N',
+                    help='input batch size for training (default: 64)')
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+                    help='learning rate (default: 0.01)')
+parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
+                    help='ADAM momentum (default: 0.9)')
+parser.add_argument('--n-features', type=float, default=64, metavar='M',
+                    help='n_features (default: 64)')
+args = parser.parse_args()
+
+batch_size = args.batch_size
+n_epochs = args.epochs
+n_features = args.n_features
 
 dataset = datasets.ImageFolder(root='/workspace/ilya/neuro-gina-toini/neurodata/neuro-train',
                                    transform=transforms.Compose([
@@ -80,8 +94,8 @@ testloader = torch.utils.data.DataLoader(testset, batch_size, shuffle=True)
 
 model = MagnusNet.net_instance(n_features)
 
-learning_rate = 0.01
-beta_one = 0.81
+learning_rate = args.lr
+beta_one = args.momentum
 beta_two = 0.999
 optimizer = optim.Adam(model.parameters(), learning_rate, (beta_one, beta_two))
 
@@ -100,9 +114,10 @@ def train(epoch):
         loss = criterion(output, label)
         loss.backward()
         optimizer.step()
-        print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-            epoch, i * len(x), len(dataloader.dataset),
-                   100. * i / len(dataloader), loss.data[0]))
+        if i % 5 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, i * len(x), len(dataloader.dataset),
+                       100. * i / len(dataloader), loss.data[0]))
             
 def test():
     model.eval()
