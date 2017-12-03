@@ -154,7 +154,7 @@ if __name__ == '__main__':
     x.load()
     data = np.asarray(x, 'int32')
     data = torch.from_numpy(data).float()
-    data = Variable(data)
+    data = Variable(data).view(1,3,84,84)
     for i in range(10):
         print(model(data))
     finish = time.time()
