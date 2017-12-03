@@ -7,7 +7,6 @@ from torch.autograd import Variable
 from torchvision import transforms, datasets
 import torch.utils.data
 
-
 CUDA = torch.cuda.is_available()
 
 
@@ -145,6 +144,18 @@ def test():
     
     
 if __name__ == '__main__':
+    import time
+    start = time.time()
     for epoch in range(1, n_epochs):
         train(epoch)
         test()
+    from PIL import Image
+    import numpy as np
+    x = Image.open('/workspace/ilya/neuro-gina-toini/neurodata/neuro-train/1/vlad13.jpg')
+    x.load()
+    data = np.asarray(x, 'int32')
+    data = Variable(data)
+    for i in range(10):
+        print(model(data))
+    finish = time.time()
+    print('Execution time ', finish-start, ' s')
