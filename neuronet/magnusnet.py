@@ -36,13 +36,13 @@ class MagnusNet(nn.Module):
             MagnusNet.half_dim_reduction_conv(n_features * 2, n_features * 4),
             nn.BatchNorm2d(n_features*4),
             nn.LeakyReLU(0.1, True),
-            nn.Conv2d(n_features * 4, n_features * 4, 5),
+            nn.Conv2d(n_features * 4, n_features, 5),
         )
         self.linearnet = nn.Sequential(
             nn.Dropout2d(0.3),
-            nn.Linear(n_features * 4, n_features),
+            nn.Linear(n_features, 32),
             nn.ReLU(True),
-            nn.Linear(n_features, 1),
+            nn.Linear(32, 1),
             nn.Sigmoid(),
         )
     
@@ -136,7 +136,7 @@ def test():
         output = model(x)
         test_loss += criterion(output, label)
         output_tensor = output.data
-        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.5 else 1.0)
+        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.9 else 1.0)
         onp = output_tensor.numpy().flatten()
         lnp = int_label.cpu().numpy()
         print(onp, ' ', lnp)
