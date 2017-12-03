@@ -59,6 +59,7 @@ class MagnusNet(nn.Module):
             instance.cuda()
         return instance
 
+
 parser = argparse.ArgumentParser(description='neurohack')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 10)')
@@ -70,20 +71,24 @@ parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='ADAM momentum (default: 0.9)')
 parser.add_argument('--n-features', type=int, default=64, metavar='M',
                     help='n_features (default: 64)')
+
+parser.add_argument('--save-path', default='neuronet/saved')
+parser.add_argument('--save', default='false')
+
 args = parser.parse_args()
 
 batch_size = args.batch_size
 n_epochs = args.epochs
 n_features = args.n_features
 
-dataset = datasets.ImageFolder(root='/workspace/ilya/neuro-gina-toini/neurodata/neuro-train',
+dataset = datasets.ImageFolder(root='neurodata/neuro-train',
                                    transform=transforms.Compose([
                                        transforms.ToTensor()
                                    ])
                                    )
 dataloader = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
 
-testset = datasets.ImageFolder(root='/workspace/ilya/neuro-gina-toini/neurodata/neuro-test',
+testset = datasets.ImageFolder(root='neurodata/neuro-train',
                                    transform=transforms.Compose([
                                        transforms.ToTensor()
                                    ])
@@ -134,7 +139,7 @@ def test():
         output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.5 else 1.0)
         onp = output_tensor.numpy().flatten()
         lnp = int_label.cpu().numpy()
-        correct += (onp == lnp).sum()
+        correct += (abs(onp - lnp) < 0.02).sum()
         total += int_label.size()[0]
     test_loss = test_loss.data.cpu().numpy()[0] / total
     
@@ -150,14 +155,25 @@ if __name__ == '__main__':
         test()
     from PIL import Image
     import numpy as np
-    x = Image.open('/workspace/ilya/neuro-gina-toini/neurodata/neuro-train/1/vlad13.jpg')
+    model.eval()
+    x = Image.open('neurodata/neuro-train/1/1.png')
     x.load()
     data = np.asarray(x, 'int32')
     data = torch.from_numpy(data).float()
-    data = Variable(data).view(1,3,84,84)
+    data = Variable(data).view(1, 3, 84, 84)
+    
+    n_x = Image.open('neurodata/neuro-train/0/adrey1.png')
+    n_x.load()
+    n_data = np.asarray(n_x, 'int32')
+    n_data = torch.from_numpy(n_data).float()
+    n_data = Variable(n_data).view(1, 3, 84, 84)
+    
     if CUDA:
         data = data.cuda()
-    for i in range(10):
-        print(model(data))
+        n_data = n_data.cuda()
+    print(model(data))
+    print(model(n_data))
     finish = time.time()
     print('Execution time ', finish-start, ' s')
+    if args.save is 'true':
+        torch.save(model.state_dict(), 'neuronet/saved/{}'.format(time.strftime("%d/%m/%Y-%H:%M:%S")))
