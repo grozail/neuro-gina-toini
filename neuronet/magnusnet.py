@@ -118,9 +118,9 @@ def test():
         output = model(x)
         test_loss += criterion(output, label)
         output_tensor = output.data
-        output_tensor = output_tensor.apply_(lambda x: 0.0 if x < 0.5 else 1.0)
+        output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.5 else 1.0)
         onp = output_tensor.numpy().flatten()
-        lnp = int_label.numpy()
+        lnp = int_label.cpu().numpy()
         correct += (onp == lnp).sum()
         total += int_label.size()[0]
     test_loss = test_loss.data.cpu().numpy()[0] / total
