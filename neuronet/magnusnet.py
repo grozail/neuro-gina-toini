@@ -69,7 +69,7 @@ parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='ADAM momentum (default: 0.9)')
-parser.add_argument('--n-features', type=int, default=64, metavar='M',
+parser.add_argument('--n-features', type=int, default=64, metavar='N',
                     help='n_features (default: 64)')
 
 parser.add_argument('--save-path', default='neuronet/saved')
@@ -88,7 +88,7 @@ dataset = datasets.ImageFolder(root='neurodata/neuro-train',
                                    )
 dataloader = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
 
-testset = datasets.ImageFolder(root='neurodata/neuro-train',
+testset = datasets.ImageFolder(root='neurodata/neuro-test',
                                    transform=transforms.Compose([
                                        transforms.ToTensor()
                                    ])
@@ -139,6 +139,7 @@ def test():
         output_tensor = output_tensor.cpu().apply_(lambda x: 0.0 if x < 0.5 else 1.0)
         onp = output_tensor.numpy().flatten()
         lnp = int_label.cpu().numpy()
+        print(onp, ' ', lnp)
         correct += (abs(onp - lnp) < 0.02).sum()
         total += int_label.size()[0]
     test_loss = test_loss.data.cpu().numpy()[0] / total
@@ -155,7 +156,9 @@ if __name__ == '__main__':
         test()
     from PIL import Image
     import numpy as np
+    
     model.eval()
+    
     x = Image.open('neurodata/neuro-train/1/1.png')
     x.load()
     data = np.asarray(x, 'int32')
