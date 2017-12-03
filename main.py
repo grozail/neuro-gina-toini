@@ -23,7 +23,7 @@ def eval():
     print(ans)
     response = {'answer': str(ans[0]), 'type': str(type(ans[0]))}
     response_pickled = jsonpickle.encode(response)
-    return Response(response=jsonify(response), status=200, mimetype="application/json")
+    return Response(response=str(ans[0]), status=200, mimetype="text/plain")
 
 
 app.run(host='0.0.0.0', port=81)
